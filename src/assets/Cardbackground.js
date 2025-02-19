@@ -5,7 +5,7 @@ const Cardbackground = (props) => (
     width={186}
     height={296}
     viewBox="0 0 186 296"
-    fill="none"
+    fill="red"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >

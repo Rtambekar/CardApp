@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import faker from 'faker';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity,Image} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Paybutton from '../assets/Paybutton';
@@ -11,39 +11,58 @@ import Homeicon from '../assets/Homeicon';
 import Qrbutton from '../assets/Qrbutton';
 import Qrshadow from '../assets/Qrshadow';
 import Qrring from '../assets/Qrring';
-import Cardbackground from '../assets/Cardbackground';
 import Geniebutton from '../assets/Giniebutton';
 import {useNavigation} from '@react-navigation/native';
-import { useEffect } from 'react';
+import Cardbackground from '../assets/Cardbackground';
+import Yolo from '../assets/Yolo';
 
 export const FreezeScreen = () => {
   const [freeze, setFreeze] = useState(false);
   const navigation = useNavigation();
   const [details, setDetails] = useState(null);
 
-   useEffect(() => {
-      const randomDetails = {
-        name: faker.name.findName(),
-        email: faker.internet.email(),
-        address: faker.address.streetAddress(),
-      };
-      setDetails(randomDetails);
-    }, []);
+  // Function to generate random card details
+  const generateCardDetails = () => {
+    const randomCardDetails = {
+      cardNumber: faker.finance.creditCardNumber('#### #### #### ####'),
+      expiryDate: `${faker.datatype.number({
+        min: 1,
+        max: 12,
+      })}/${faker.datatype.number({min: 24, max: 30})}`,
+      cvv: faker.finance.creditCardCVV(),
+    };
+    console.log('Generated Card Details:', randomCardDetails); // Debugging log
+    setDetails(randomCardDetails);
+  };
 
+  // Generate initial card details on component mount
+  // useEffect(() => {
+  //   generateCardDetails();
+  // }, []);
+
+  // Regenerate card details when freeze is set to true
+  useEffect(() => {
+    if (freeze) {
+      setTimeout(() => {
+        generateCardDetails(); // Generate details after 1 sec
+      }, 1000);
+    } else {
+      setDetails(null); // Hide details immediately when unfreezing
+    }
+  }, [freeze]);
+
+  // Handle button click
   const handleAnimation = () => {
-    setFreeze(true);
-    setTimeout(() => {
-      // navigation.navigate('');
-    }, 1000);
+    setFreeze(prevState => !prevState);
   };
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>select payment mode</Text>
+          <Text style={styles.headerText}>Select Payment Mode</Text>
           <Text style={styles.subText}>
-            choose your preferred payment method to make payment.
+            Choose your preferred payment method to make a payment.
           </Text>
         </View>
 
@@ -68,10 +87,50 @@ export const FreezeScreen = () => {
             />
             <TouchableOpacity
               onPress={handleAnimation}
-              style={styles.freezeButton}>
+              style={[styles.freezeButton]}>
               <Snowbutton />
-              <Text style={styles.freezeText}>unfreeze</Text>
+              <Text style={styles.freezeText}>
+                {freeze ? 'Freeze' : 'Unfreeze'}
+              </Text>
             </TouchableOpacity>
+
+            {details && (
+              <View style={styles.cardContainer2}>
+                <View style={styles.cardHeader}>
+                  <Yolo style={styles.cardBrand}/>
+                  <View style={styles.bankLogo}>
+                    <Text style={styles.bankName}>YES BANK</Text>
+                  </View>
+                </View>
+
+                <Text style={[styles.cardNumber, styles.cardText]}>
+                  {details.cardNumber}
+                </Text>
+
+                <View style={styles.cardDetails}>
+                  <Text style={[styles.cardExpiry, styles.cardText]}>
+                    expiry{'\n'}
+                    {details.expiryDate}
+                  </Text>
+
+                  <Text style={[styles.cardCvv, styles.cardText]}>
+                    cvv{'\n'}
+                    ***
+                  </Text>
+                </View>
+
+                <View style={styles.cardFooter}>
+                  <TouchableOpacity style={styles.copyButton}>
+                    <Text style={styles.copyText}>copy details</Text>
+                  </TouchableOpacity>
+
+                 <Image
+                    source={require('../assets/rupay-logo.png')}
+                    style={styles.paymentLogo}
+                  />
+                </View>
+              </View>
+            )}
           </View>
         </View>
 
@@ -148,8 +207,9 @@ const styles = StyleSheet.create({
     // Adjust as needed based on the actual button
   },
   cardContainer: {
-    marginTop: 25,
+    marginTop: 28,
     alignItems: 'center',
+    
   },
   cardLabel: {
     color: '#8c8c8c',
@@ -164,7 +224,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    marginRight:70
+    marginRight: 70,
   },
   cardImage: {
     height: 450,
@@ -179,10 +239,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontFamily: 'Poppins',
     fontSize: 14,
-    
   },
   bottomNavContainer: {
-
     position: 'absolute',
     bottom: -18,
     left: 0,
@@ -209,15 +267,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 5,
-    paddingTop: 40
+    paddingTop: 40,
   },
   qrButton: {
-    paddingTop:10,
+    paddingTop: 10,
     alignItems: 'center',
     width: 70,
     position: 'relative',
     bottom: 20,
-   // Raises the QR button above the others
+    // Raises the QR button above the others
   },
   qrWrapper: {
     position: 'relative',
@@ -250,4 +308,83 @@ const styles = StyleSheet.create({
     position: 'relative',
     top: 5, // Adjusts the "yolo pay" text position
   },
+  cardContainer2: {
+    backgroundColor: '#000000',
+    borderRadius:16,
+    position: 'absolute',
+    top: 0,
+    left: 25,
+    width: '70%',
+    height: 400,
+    padding: 20,
+    justifyContent: 'space-between',
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 10,
+  },
+  cardBrand: {
+    color: '#FF3B30',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  bankLogo: {
+    backgroundColor: '#0066CC',
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  bankName: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  cardNumber: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    fontFamily: 'monospace',
+    fontWeight: '500',
+    marginTop: 80,
+  },
+  cardDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 50,
+  },
+  cardExpiry: {
+    fontSize: 14,
+    color: '#9a9a9a',
+    paddingLeft:2
+  },
+  cardCvv: {
+    fontSize: 14,
+    color: '#9a9a9a',
+    marginLeft: 80,
+    paddingRight:10
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 10,
+  },
+  copyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  copyText: {
+    color: '#FF3B30',
+    fontSize: 14,
+    fontFamily: 'monospace',
+  },
+  paymentLogo: {
+    width: 80,
+    height: 30,
+    resizeMode: 'contain',
+  }
+  
 });

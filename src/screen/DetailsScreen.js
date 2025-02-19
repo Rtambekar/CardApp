@@ -8,9 +8,9 @@ export const DetailsScreen = ({ freeze }) => {
 
   useEffect(() => {
     const randomDetails = {
-      name: faker.name.findName(),
-      email: faker.internet.email(),
-      address: faker.address.streetAddress(),
+    cardNumber: faker.finance.creditCardNumber('#### #### #### ####'),
+          expiryDate: `${faker.datatype.number({ min: 1, max: 12 })}/${faker.datatype.number({ min: 24, max: 30 })}`,
+          cvv: faker.finance.creditCardCVV(),
     };
     setDetails(randomDetails);
   }, []);
@@ -23,9 +23,9 @@ export const DetailsScreen = ({ freeze }) => {
           iterationCount="infinite"
           style={styles.card}
         >
-          <Text style={styles.title}>{details.name}</Text>
-          <Text>{details.email}</Text>
-          <Text>{details.address}</Text>
+          <Text style={styles.cardText}>Card Number: {details.cardNumber}</Text>
+                          <Text style={styles.cardText}>Expiry Date: {details.expiryDate}</Text>
+                          <Text style={styles.cardText}>CVV: {details.cvv}</Text>
         </Animatable.View>
       ) : (
         <Text>Loading...</Text>
