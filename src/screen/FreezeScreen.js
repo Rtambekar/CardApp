@@ -200,12 +200,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
     gap: 10,
   },
-  payButton: {
-    // Adjust as needed based on the actual button
-  },
-  cardButton: {
-    // Adjust as needed based on the actual button
-  },
   cardContainer: {
     marginTop: 28,
     alignItems: 'center',
@@ -215,7 +209,6 @@ const styles = StyleSheet.create({
     color: '#8c8c8c',
     fontFamily: 'Poppins',
     fontSize: 12,
-    marginBottom: 10,
     textTransform: 'uppercase',
     alignSelf: 'flex-start',
   },
@@ -223,12 +216,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '100%',
-    marginRight: 70,
+    width: '95%',
+    marginRight: 80,
   },
   cardImage: {
-    height: 450,
-    width: '85%',
+    height: 550,
+    width: '100%',
     borderRadius: 16,
   },
   freezeButton: {
@@ -312,7 +305,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     borderRadius:16,
     position: 'absolute',
-    top: 0,
+    top: 60,
     left: 25,
     width: '70%',
     height: 400,
